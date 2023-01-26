@@ -1,0 +1,99 @@
+@import "../styles/variables";
+@import "../styles/mixins";
+
+.slot-conteiner {
+  color: white;
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__interface {
+    margin-top: 15vh;
+
+    // border-radius: 4px 4px 0 0;
+    // border-color: white;
+    border: 2px solid white;
+    @include mediaQuery($desktop-large-width) {
+      width: 5 * $slot-icon-width-large-desktop;
+      height: 3 * $slot-icon-width-large-desktop;
+    }
+    @include mediaQuery($desktop-width) {
+      width: 5 * $slot-icon-width-desktop;
+      height: 3 * $slot-icon-width-desktop;
+    }
+    @include mediaQuery($tablet-width) {
+      width: 5 * $slot-icon-width-tablet;
+      height: 3 * $slot-icon-width-tablet;
+    }
+    @include mediaQuery($mobile-width) {
+      width: 5 * $slot-icon-width-mobile;
+      height: 3 * $slot-icon-width-mobile;
+    }
+
+    display: flex;
+
+    .column {
+      @include mediaQuery($desktop-large-width) {
+        width: $slot-icon-width-large-desktop;
+      }
+      @include mediaQuery($desktop-width) {
+        width: $slot-icon-width-desktop;
+      }
+      @include mediaQuery($tablet-width) {
+        width: $slot-icon-width-tablet;
+      }
+
+      @include mediaQuery($mobile-width) {
+        width: $slot-icon-width-mobile;
+      }
+
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      .reel {
+        position: absolute;
+        bottom: 0px;
+
+        & > div {
+          @include mediaQuery($desktop-large-width) {
+            min-width: $slot-icon-width-large-desktop;
+            width: $slot-icon-width-large-desktop;
+            min-height: $slot-icon-width-large-desktop;
+            height: $slot-icon-width-large-desktop;
+          }
+          @include mediaQuery($desktop-width) {
+            min-width: $slot-icon-width-desktop;
+            width: $slot-icon-width-desktop;
+            min-height: $slot-icon-width-desktop;
+            height: $slot-icon-width-desktop;
+          }
+          @include mediaQuery($tablet-width) {
+            min-width: $slot-icon-width-tablet;
+            width: $slot-icon-width-tablet;
+            min-height: $slot-icon-width-tablet;
+            height: $slot-icon-width-tablet;
+          }
+          @include mediaQuery($mobile-width) {
+            min-width: $slot-icon-width-mobile;
+            width: $slot-icon-width-mobile;
+            min-height: $slot-icon-width-mobile;
+            height: $slot-icon-width-mobile;
+          }
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        & > div > img {
+          height: 80%;
+          width: 80%;
+          object-fit: contain;
+        }
+      }
+    }
+  }
+}
