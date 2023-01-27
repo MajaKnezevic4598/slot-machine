@@ -2,8 +2,9 @@ import "./Slot.scss";
 import IMAGES from "../assets";
 import Symbol from "./Symbol";
 import { v4 as uuidv4 } from "uuid";
+import { losingCombination } from "../helperFunctions";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 
 const slotSymbols = [
   { src: IMAGES.seven, value: 100 },
@@ -60,8 +61,8 @@ function Slot() {
   };
 
   let ID;
+
   const moveReels = () => {
-    ID = requestAnimationFrame(moveReels);
     const restartPoint = (NUMBER_OF_SYMBOLS / 2 - 1) * gameState.symbolHeight;
 
     if (gameState.reelsBottomPostion >= restartPoint) {
@@ -74,6 +75,7 @@ function Slot() {
         };
       });
     }
+    ID = requestAnimationFrame(moveReels);
   };
 
   useEffect(() => {
@@ -89,11 +91,16 @@ function Slot() {
   }, [start, gameState.reelsBottomPostion]);
 
   useEffect(() => {
-    setReel1(initShuffleArray(slotSymbols));
-    setReel2(initShuffleArray(slotSymbols));
-    setReel3(initShuffleArray(slotSymbols));
-    setReel4(initShuffleArray(slotSymbols));
-    setReel5(initShuffleArray(slotSymbols));
+    // setReel1(initShuffleArray(slotSymbols));
+    // setReel2(initShuffleArray(slotSymbols));
+    // setReel3(initShuffleArray(slotSymbols));
+    // setReel4(initShuffleArray(slotSymbols));
+    // setReel5(initShuffleArray(slotSymbols));
+    const arr1 = initShuffleArray(slotSymbols);
+    const arr2 = initShuffleArray(slotSymbols);
+    const arr3 = initShuffleArray(slotSymbols);
+    const arr4 = initShuffleArray(slotSymbols);
+    const arr5 = initShuffleArray(slotSymbols);
   }, []);
 
   const handleClick = () => {
@@ -104,7 +111,7 @@ function Slot() {
     const setPositions = () => {
       const symbolHeight = reelOneRef.current.children[0].offsetHeight;
 
-      const delta = symbolHeight;
+      const delta = symbolHeight / 4;
       setGameState((prev) => {
         return { ...prev, symbolHeight, delta };
       });
