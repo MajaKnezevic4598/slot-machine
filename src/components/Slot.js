@@ -58,13 +58,12 @@ function Slot() {
 
   useEffect(() => {
     const arrayOfIndex = slotSymbols.map((item) => item.id);
-    // console.log(arrayOfIndex);
     let arr1 = initShuffleArray(arrayOfIndex);
     let arr2 = initShuffleArray(arrayOfIndex);
     let arr3 = initShuffleArray(arrayOfIndex);
     let arr4 = initShuffleArray(arrayOfIndex);
     let arr5 = initShuffleArray(arrayOfIndex);
-    let lose = winningCombination(arr1, arr2, arr3, arr4, arr5);
+    let lose = losingCombination(arr1, arr2, arr3, arr4, arr5);
 
     arr1 = lose[0];
     arr2 = lose[1];
@@ -124,8 +123,45 @@ function Slot() {
   }, [start]);
 
   useEffect(() => {
-    if (count === 4) {
-      setCount(0);
+    if (count % 4 !== 0) {
+      const arrayOfIndex = slotSymbols.map((item) => item.id);
+      let arr1 = initShuffleArray(arrayOfIndex);
+      let arr2 = initShuffleArray(arrayOfIndex);
+      let arr3 = initShuffleArray(arrayOfIndex);
+      let arr4 = initShuffleArray(arrayOfIndex);
+      let arr5 = initShuffleArray(arrayOfIndex);
+      let lose = losingCombination(arr1, arr2, arr3, arr4, arr5);
+
+      arr1 = lose[0];
+      arr2 = lose[1];
+      arr3 = lose[2];
+      arr4 = lose[3];
+      arr5 = lose[4];
+      setReel1(settingSymbols(arr1, slotSymbols));
+      setReel2(settingSymbols(arr2, slotSymbols));
+      setReel3(settingSymbols(arr3, slotSymbols));
+      setReel4(settingSymbols(arr4, slotSymbols));
+      setReel5(settingSymbols(arr5, slotSymbols));
+    }
+    if (count % 4 === 0 && count > 0) {
+      const arrayOfIndex = slotSymbols.map((item) => item.id);
+      let arr1 = initShuffleArray(arrayOfIndex);
+      let arr2 = initShuffleArray(arrayOfIndex);
+      let arr3 = initShuffleArray(arrayOfIndex);
+      let arr4 = initShuffleArray(arrayOfIndex);
+      let arr5 = initShuffleArray(arrayOfIndex);
+      let win = winningCombination(arr1, arr2, arr3, arr4, arr5);
+
+      arr1 = win[0];
+      arr2 = win[1];
+      arr3 = win[2];
+      arr4 = win[3];
+      arr5 = win[4];
+      setReel1(settingSymbols(arr1, slotSymbols));
+      setReel2(settingSymbols(arr2, slotSymbols));
+      setReel3(settingSymbols(arr3, slotSymbols));
+      setReel4(settingSymbols(arr4, slotSymbols));
+      setReel5(settingSymbols(arr5, slotSymbols));
     }
   }, [count]);
 
