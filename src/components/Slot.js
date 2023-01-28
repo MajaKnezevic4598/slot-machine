@@ -2,7 +2,11 @@ import "./Slot.scss";
 import IMAGES from "../assets";
 import Symbol from "./Symbol";
 import { v4 as uuidv4 } from "uuid";
-import { losingCombination, losingSymbols } from "../helperFunctions";
+import {
+  losingCombination,
+  settingSymbols,
+  winningCombination,
+} from "../helperFunctions";
 
 import React, { useState, useRef, useEffect } from "react";
 
@@ -41,6 +45,7 @@ function Slot() {
 
   const [gameState, setGameState] = useState(initialState);
   const [start, setStart] = useState(false);
+  const [count, setCount] = useState(0);
 
   const conteinerRef = useRef(null);
   const reelOneRef = useRef(null);
@@ -50,6 +55,28 @@ function Slot() {
   const [reel3, setReel3] = useState([]);
   const [reel4, setReel4] = useState([]);
   const [reel5, setReel5] = useState([]);
+
+  useEffect(() => {
+    const arrayOfIndex = slotSymbols.map((item) => item.id);
+    // console.log(arrayOfIndex);
+    let arr1 = initShuffleArray(arrayOfIndex);
+    let arr2 = initShuffleArray(arrayOfIndex);
+    let arr3 = initShuffleArray(arrayOfIndex);
+    let arr4 = initShuffleArray(arrayOfIndex);
+    let arr5 = initShuffleArray(arrayOfIndex);
+    let lose = winningCombination(arr1, arr2, arr3, arr4, arr5);
+
+    arr1 = lose[0];
+    arr2 = lose[1];
+    arr3 = lose[2];
+    arr4 = lose[3];
+    arr5 = lose[4];
+    setReel1(settingSymbols(arr1, slotSymbols));
+    setReel2(settingSymbols(arr2, slotSymbols));
+    setReel3(settingSymbols(arr3, slotSymbols));
+    setReel4(settingSymbols(arr4, slotSymbols));
+    setReel5(settingSymbols(arr5, slotSymbols));
+  }, []);
 
   const resetPos = () => {
     setGameState((state) => {
@@ -91,26 +118,16 @@ function Slot() {
   }, [start, gameState.reelsBottomPostion]);
 
   useEffect(() => {
-    const arrayOfIndex = slotSymbols.map((item) => item.id);
-    // console.log(arrayOfIndex);
-    let arr1 = initShuffleArray(arrayOfIndex);
-    let arr2 = initShuffleArray(arrayOfIndex);
-    let arr3 = initShuffleArray(arrayOfIndex);
-    let arr4 = initShuffleArray(arrayOfIndex);
-    let arr5 = initShuffleArray(arrayOfIndex);
-    let lose = losingCombination(arr1, arr2, arr3, arr4, arr5);
+    if (start) {
+      setCount((prev) => prev + 1);
+    }
+  }, [start]);
 
-    arr1 = lose[0];
-    arr2 = lose[1];
-    arr3 = lose[2];
-    arr4 = lose[3];
-    arr5 = lose[4];
-    setReel1(losingSymbols(arr1, slotSymbols));
-    setReel2(losingSymbols(arr2, slotSymbols));
-    setReel3(losingSymbols(arr3, slotSymbols));
-    setReel4(losingSymbols(arr4, slotSymbols));
-    setReel5(losingSymbols(arr5, slotSymbols));
-  }, []);
+  useEffect(() => {
+    if (count === 4) {
+      setCount(0);
+    }
+  }, [count]);
 
   const handleClick = () => {
     setStart(!start);
@@ -134,6 +151,7 @@ function Slot() {
 
   return (
     <div className="slot-conteiner">
+      <div>{count}</div>
       <section className="slot-conteiner__interface" ref={conteinerRef}>
         <div className="column first">
           <div

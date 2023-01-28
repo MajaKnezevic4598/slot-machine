@@ -13,27 +13,50 @@ export const losingCombination = (arr1, arr2, arr3, arr4, arr5) => {
         if (random === matrix[i][j]) {
           random = random + 1;
         }
-        const shuffled = matrix[i].map((item) => {
-          return item === matrix[i][j] ? random : item;
-        });
 
-        matrix[i] = shuffled;
+        let losingIndex = matrix[i][j];
+
+        let arrayToChangePosition = matrix[i];
+
+        const lastIndex = arrayToChangePosition.lastIndexOf(random);
+
+        arrayToChangePosition[j] = random;
+        arrayToChangePosition[lastIndex] = losingIndex;
+
+        matrix[i] = arrayToChangePosition;
       }
     }
   }
   return matrix;
 };
 
-export const losingSymbols = (reelIndexArray, slotSymbols) => {
-  let symbols = [...reelIndexArray, ...reelIndexArray];
+export const winningCombination = (arr1, arr2, arr3, arr4, arr5) => {
+  let matrix = [[...arr1], [...arr2], [...arr3], [...arr4], [...arr5]];
+  for (let i = 0; i < matrix.length - 2; i++) {
+    for (let j = 0; j < arr1.length; j++) {
+      if (matrix[i][j] === matrix[i + 1][j]) {
+        let winingIndex = matrix[i][j];
+        let arrayToChangePosition = matrix[i + 2];
+        let indexToSwithPositon = arrayToChangePosition.indexOf(winingIndex);
+        arrayToChangePosition[indexToSwithPositon] = arrayToChangePosition[j];
+        arrayToChangePosition[j] = winingIndex;
+        matrix[i + 2] = arrayToChangePosition;
+      }
+    }
+  }
+  return matrix;
+};
 
-  let losing = [];
-  for (let i = 0; i < symbols.length; i++) {
+export const settingSymbols = (reelIndexArray, slotSymbols) => {
+  let indexes = [...reelIndexArray, ...reelIndexArray];
+
+  let symbols = [];
+  for (let i = 0; i < indexes.length; i++) {
     slotSymbols.forEach((item) => {
-      if (item.id === symbols[i]) {
-        losing.push({ ...item });
+      if (item.id === indexes[i]) {
+        symbols.push({ ...item });
       }
     });
   }
-  return losing;
+  return symbols;
 };
