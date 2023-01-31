@@ -48,7 +48,7 @@ export const winningCombination = (arr1, arr2, arr3, arr4, arr5) => {
 };
 
 export const settingSymbols = (reelIndexArray, slotSymbols) => {
-  let indexes = [...reelIndexArray, ...reelIndexArray];
+  let indexes = [...reelIndexArray];
 
   let symbols = [];
   for (let i = 0; i < indexes.length; i++) {
@@ -59,4 +59,23 @@ export const settingSymbols = (reelIndexArray, slotSymbols) => {
     });
   }
   return symbols;
+};
+
+//function that calculate how much do we need to move the div to be centered,
+//after stopin the animation
+export const deltaAfterStopingAnimation = (
+  positionFromBottom,
+  symbolHeight
+) => {
+  let delta;
+  if (positionFromBottom % 4 === 0) return 0;
+  else {
+    while (positionFromBottom - symbolHeight > symbolHeight) {
+      console.log(positionFromBottom);
+      console.log(symbolHeight);
+      delta = positionFromBottom - symbolHeight;
+      positionFromBottom = positionFromBottom - symbolHeight;
+    }
+    return delta - symbolHeight;
+  }
 };

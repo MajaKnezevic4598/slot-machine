@@ -16,7 +16,7 @@
     // border-radius: 4px 4px 0 0;
     // border-color: white;
     border: 2px solid white;
-    @include mediaQuery($desktop-large-width) {
+    @include mediaQuery($desktop-large-widht) {
       width: 5 * $slot-icon-width-large-desktop;
       height: 3 * $slot-icon-width-large-desktop;
     }
@@ -37,7 +37,7 @@
     overflow: hidden;
 
     .column {
-      @include mediaQuery($desktop-large-width) {
+      @include mediaQuery($desktop-large-widht) {
         width: $slot-icon-width-large-desktop;
       }
       @include mediaQuery($desktop-width) {
@@ -59,7 +59,7 @@
         bottom: 0px;
 
         & > div {
-          @include mediaQuery($desktop-large-width) {
+          @include mediaQuery($desktop-large-widht) {
             min-width: $slot-icon-width-large-desktop;
             width: $slot-icon-width-large-desktop;
             min-height: $slot-icon-width-large-desktop;

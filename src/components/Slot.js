@@ -6,6 +6,7 @@ import {
   losingCombination,
   settingSymbols,
   winningCombination,
+  deltaAfterStopingAnimation,
 } from "../helperFunctions";
 
 import React, { useState, useRef, useEffect } from "react";
@@ -46,9 +47,14 @@ function Slot() {
   const [gameState, setGameState] = useState(initialState);
   const [start, setStart] = useState(false);
   const [count, setCount] = useState(0);
+  const [topConteinerPostition, setTopConteinerPosition] = useState();
+  const [bottomConteinerPosition, setBottomConteinerPostion] = useState();
+  const [deltaFromTop, setDeltaFromTop] = useState();
+  const [move, setMove] = useState(0);
 
   const conteinerRef = useRef(null);
   const reelOneRef = useRef(null);
+  const reelOneRefs = useRef([]);
 
   const [reel1, setReel1] = useState([]);
   const [reel2, setReel2] = useState([]);
@@ -87,39 +93,41 @@ function Slot() {
   };
 
   let ID;
-
   const moveReels = () => {
-    const restartPoint = (NUMBER_OF_SYMBOLS / 2 - 1) * gameState.symbolHeight;
-
-    if (gameState.reelsBottomPostion >= restartPoint) {
-      resetPos();
-    } else {
-      setGameState((state) => {
-        return {
-          ...state,
-          reelsBottomPostion: state.reelsBottomPostion + state.delta,
-        };
-      });
-    }
+    setGameState((state) => {
+      return {
+        ...state,
+        reelsBottomPostion: state.reelsBottomPostion + state.delta,
+      };
+    });
     ID = requestAnimationFrame(moveReels);
   };
 
   useEffect(() => {
-    if (start) {
-      moveReels();
-    } else {
-      cancelAnimationFrame(ID);
-    }
+    const setPositions = () => {
+      const symbolHeight = reelOneRef.current.children[0].offsetHeight;
 
-    return () => {
-      cancelAnimationFrame(ID);
+      const delta = symbolHeight / 4;
+
+      setGameState((prev) => {
+        return { ...prev, symbolHeight, delta };
+      });
     };
-  }, [start, gameState.reelsBottomPostion]);
+    setTimeout(setPositions, 1000);
+  }, []);
 
   useEffect(() => {
+    let timer;
     if (start) {
-      setCount((prev) => prev + 1);
+      moveReels();
+      timer = setTimeout(() => {
+        setStart(false);
+      }, 4000);
     }
+    return () => {
+      cancelAnimationFrame(ID);
+      clearTimeout(timer);
+    };
   }, [start]);
 
   useEffect(() => {
@@ -170,20 +178,13 @@ function Slot() {
   };
 
   useEffect(() => {
-    const setPositions = () => {
-      const symbolHeight = reelOneRef.current.children[0].offsetHeight;
+    console.log(gameState.reelsBottomPostion);
+    const restartPoint = (NUMBER_OF_SYMBOLS / 2 - 1) * gameState.symbolHeight;
 
-      const delta = symbolHeight / 4;
-      setGameState((prev) => {
-        return { ...prev, symbolHeight, delta };
-      });
-    };
-    setTimeout(setPositions, 1000);
-  }, []);
-
-  useEffect(() => {
-    console.log(gameState);
-  }, [gameState]);
+    if (gameState.reelsBottomPostion >= restartPoint) {
+      resetPos();
+    }
+  }, [gameState.reelsBottomPostion]);
 
   return (
     <div className="slot-conteiner">
@@ -197,9 +198,16 @@ function Slot() {
               bottom: `-${gameState.reelsBottomPostion}px`,
             }}
           >
-            {reel1.map((item) => (
-              <Symbol key={uuidv4()} item={item} />
-            ))}
+            {reel1.map((item, index) => {
+              return (
+                <div
+                  key={uuidv4()}
+                  ref={(element) => (reelOneRefs.current[index] = element)}
+                >
+                  <img src={item.src} alt="" id={item.value} />
+                </div>
+              );
+            })}
           </div>
         </div>
         <div className="column second">
