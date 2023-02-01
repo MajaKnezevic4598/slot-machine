@@ -62,20 +62,20 @@ export const settingSymbols = (reelIndexArray, slotSymbols) => {
 };
 
 //function that calculate how much do we need to move the div to be centered,
-//after stopin the animation
+//after stoping the animation
+
 export const deltaAfterStopingAnimation = (
   positionFromBottom,
   symbolHeight
 ) => {
   let delta;
-  if (positionFromBottom % 4 === 0) return 0;
+  if (positionFromBottom % symbolHeight === 0) return 0;
+  if (positionFromBottom < symbolHeight) return positionFromBottom;
   else {
-    while (positionFromBottom - symbolHeight > symbolHeight) {
-      console.log(positionFromBottom);
-      console.log(symbolHeight);
+    while (positionFromBottom - symbolHeight >= symbolHeight / 4) {
       delta = positionFromBottom - symbolHeight;
       positionFromBottom = positionFromBottom - symbolHeight;
     }
-    return delta - symbolHeight;
+    return delta;
   }
 };

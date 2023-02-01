@@ -39,7 +39,7 @@ function Slot() {
   //number of symbols 9*2
   const initialState = {
     numberOfSymbols: NUMBER_OF_SYMBOLS,
-    reelsBottomPostion: 0,
+    reelsBottomPosition: 0,
     symbolHeight: 0,
     delta: 0,
   };
@@ -87,7 +87,7 @@ function Slot() {
     setGameState((state) => {
       return {
         ...state,
-        reelsBottomPostion: 0,
+        reelsBottomPosition: 0,
       };
     });
   };
@@ -97,7 +97,7 @@ function Slot() {
     setGameState((state) => {
       return {
         ...state,
-        reelsBottomPostion: state.reelsBottomPostion + state.delta,
+        reelsBottomPosition: state.reelsBottomPosition + state.delta,
       };
     });
     ID = requestAnimationFrame(moveReels);
@@ -119,15 +119,46 @@ function Slot() {
   useEffect(() => {
     let timer;
     if (start) {
+      setCount((prev) => prev + 1);
       moveReels();
       timer = setTimeout(() => {
+        cancelAnimationFrame(ID);
         setStart(false);
-      }, 4000);
+      }, 9000);
     }
+
     return () => {
       cancelAnimationFrame(ID);
       clearTimeout(timer);
     };
+  }, [start]);
+
+  useEffect(() => {
+    if (start === false && count !== 0) {
+      console.log(gameState.reelsBottomPosition);
+      let delta = deltaAfterStopingAnimation(
+        gameState.reelsBottomPosition,
+        gameState.symbolHeight
+      );
+      console.log(delta);
+      if (delta === 0) return;
+      if (delta === gameState.symbolHeight / 4) {
+        setGameState((prev) => {
+          return {
+            ...prev,
+            reelsBottomPosition: prev.reelsBottomPosition - delta,
+          };
+        });
+      } else {
+        setGameState((prev) => {
+          return {
+            ...prev,
+            reelsBottomPosition:
+              prev.reelsBottomPosition + (prev.symbolHeight - delta),
+          };
+        });
+      }
+    }
   }, [start]);
 
   useEffect(() => {
@@ -178,13 +209,15 @@ function Slot() {
   };
 
   useEffect(() => {
-    console.log(gameState.reelsBottomPostion);
-    const restartPoint = (NUMBER_OF_SYMBOLS / 2 - 1) * gameState.symbolHeight;
+    const restartPoint =
+      (NUMBER_OF_SYMBOLS / 2) * gameState.symbolHeight -
+      gameState.symbolHeight / 4;
 
-    if (gameState.reelsBottomPostion >= restartPoint) {
+    if (gameState.reelsBottomPosition >= restartPoint) {
       resetPos();
     }
-  }, [gameState.reelsBottomPostion]);
+    console.log(gameState.reelsBottomPosition);
+  }, [gameState.reelsBottomPosition]);
 
   return (
     <div className="slot-conteiner">
@@ -195,7 +228,7 @@ function Slot() {
             className="reel one"
             ref={reelOneRef}
             style={{
-              bottom: `-${gameState.reelsBottomPostion}px`,
+              bottom: `-${gameState.reelsBottomPosition}px`,
             }}
           >
             {reel1.map((item, index) => {
@@ -214,7 +247,7 @@ function Slot() {
           <div
             className="reel two"
             style={{
-              bottom: `-${gameState.reelsBottomPostion}px`,
+              bottom: `-${gameState.reelsBottomPosition}px`,
             }}
           >
             {reel2.map((item) => (
@@ -226,7 +259,7 @@ function Slot() {
           <div
             className="reel three"
             style={{
-              bottom: `-${gameState.reelsBottomPostion}px`,
+              bottom: `-${gameState.reelsBottomPosition}px`,
             }}
           >
             {reel3.map((item) => (
@@ -238,7 +271,7 @@ function Slot() {
           <div
             className="reel four"
             style={{
-              bottom: `-${gameState.reelsBottomPostion}px`,
+              bottom: `-${gameState.reelsBottomPosition}px`,
             }}
           >
             {reel4.map((item) => (
@@ -250,7 +283,7 @@ function Slot() {
           <div
             className="reel five"
             style={{
-              bottom: `-${gameState.reelsBottomPostion}px`,
+              bottom: `-${gameState.reelsBottomPosition}px`,
             }}
           >
             {reel5.map((item) => (
