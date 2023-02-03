@@ -31,7 +31,7 @@ function initShuffleArray(arr) {
     arr[j] = current;
     arr[i] = random;
   }
-  return [...arr, ...arr];
+  return [...arr];
 }
 
 function Slot() {
@@ -124,7 +124,7 @@ function Slot() {
       timer = setTimeout(() => {
         cancelAnimationFrame(ID);
         setStart(false);
-      }, 9000);
+      }, 4000);
     }
 
     return () => {
@@ -184,18 +184,20 @@ function Slot() {
     }
     if (count % 4 === 0 && count > 0) {
       const arrayOfIndex = slotSymbols.map((item) => item.id);
-      let arr1 = initShuffleArray(arrayOfIndex);
-      let arr2 = initShuffleArray(arrayOfIndex);
-      let arr3 = initShuffleArray(arrayOfIndex);
-      let arr4 = initShuffleArray(arrayOfIndex);
-      let arr5 = initShuffleArray(arrayOfIndex);
-      let win = winningCombination(arr1, arr2, arr3, arr4, arr5);
 
-      arr1 = win[0];
-      arr2 = win[1];
-      arr3 = win[2];
-      arr4 = win[3];
-      arr5 = win[4];
+      let win = winningCombination(
+        arrayOfIndex,
+        arrayOfIndex,
+        arrayOfIndex,
+        arrayOfIndex,
+        arrayOfIndex
+      );
+
+      let arr1 = win[0];
+      let arr2 = win[1];
+      let arr3 = win[2];
+      let arr4 = win[3];
+      let arr5 = win[4];
       setReel1(settingSymbols(arr1, slotSymbols));
       setReel2(settingSymbols(arr2, slotSymbols));
       setReel3(settingSymbols(arr3, slotSymbols));
@@ -205,7 +207,7 @@ function Slot() {
   }, [count]);
 
   const handleClick = () => {
-    setStart(!start);
+    setStart(true);
   };
 
   useEffect(() => {
