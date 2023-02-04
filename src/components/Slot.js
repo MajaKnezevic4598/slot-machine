@@ -1,6 +1,6 @@
 import "./Slot.scss";
 import IMAGES from "../assets";
-import Symbol from "./Symbol";
+
 import { v4 as uuidv4 } from "uuid";
 import {
   losingCombination,
@@ -458,7 +458,9 @@ function Slot() {
       </section>
 
       <section>
-        <button onClick={handleClick}>Start</button>
+        <button className="btn-start" onClick={handleClick} disabled={start}>
+          Start
+        </button>
       </section>
       <section></section>
     </div>

@@ -51,23 +51,6 @@ function winningArray(arr) {
   return arr;
 }
 
-// export const winningCombination = (arr1, arr2, arr3, arr4, arr5) => {
-//   let matrix = [[...arr1], [...arr2], [...arr3], [...arr4], [...arr5]];
-//   for (let i = 0; i < matrix.length - 2; i++) {
-//     for (let j = 0; j < arr1.length; j++) {
-//       if (matrix[i][j] === matrix[i + 1][j]) {
-//         let winingIndex = matrix[i][j];
-//         let arrayToChangePosition = matrix[i + 2];
-//         let indexToSwithPositon = arrayToChangePosition.indexOf(winingIndex);
-//         arrayToChangePosition[indexToSwithPositon] = arrayToChangePosition[j];
-//         arrayToChangePosition[j] = winingIndex;
-//         matrix[i + 2] = arrayToChangePosition;
-//       }
-//     }
-//   }
-//   return matrix;
-// };
-
 function initShuffleArray(arr) {
   for (let i = 0; i < arr.length - 2; i++) {
     const j = Math.floor(Math.random() * (arr.length - i) + i);
