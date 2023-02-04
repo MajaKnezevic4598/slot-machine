@@ -7,6 +7,7 @@ import {
   settingSymbols,
   winningCombination,
   deltaAfterStopingAnimation,
+  calculateScore,
 } from "../helperFunctions";
 
 import React, { useState, useRef, useEffect } from "react";
@@ -49,12 +50,24 @@ function Slot() {
   const [count, setCount] = useState(0);
   const [topConteinerPostition, setTopConteinerPosition] = useState();
   const [bottomConteinerPosition, setBottomConteinerPostion] = useState();
-  const [deltaFromTop, setDeltaFromTop] = useState();
-  const [move, setMove] = useState(0);
+  const [score, setScore] = useState(0);
+  //   const [deltaFromTop, setDeltaFromTop] = useState();
+  //   const [move, setMove] = useState(0);
+
+  //visible vertical part of the array
+  const [visibleVertical1, setVisibleVertical1] = useState([]);
+  const [visibleVertical2, setVisibleVertical2] = useState([]);
+  const [visibleVertical3, setVisibleVertical3] = useState([]);
+  const [visibleVertical4, setVisibleVertical4] = useState([]);
+  const [visibleVertical5, setVisibleVertical5] = useState([]);
 
   const conteinerRef = useRef(null);
   const reelOneRef = useRef(null);
   const reelOneRefs = useRef([]);
+  const reelTwoRefs = useRef([]);
+  const reelThreeRefs = useRef([]);
+  const reelFourRefs = useRef([]);
+  const reelFiveRefs = useRef([]);
 
   const [reel1, setReel1] = useState([]);
   const [reel2, setReel2] = useState([]);
@@ -113,8 +126,22 @@ function Slot() {
         return { ...prev, symbolHeight, delta };
       });
     };
-    setTimeout(setPositions, 1000);
+    let id = setTimeout(() => {
+      setPositions();
+      setTopConteinerPosition(conteinerRef.current.getBoundingClientRect().top);
+      setBottomConteinerPostion(
+        conteinerRef.current.getBoundingClientRect().bottom
+      );
+    }, 1000);
+    return () => {
+      clearTimeout(id);
+    };
   }, []);
+
+  useEffect(() => {
+    console.log(topConteinerPostition);
+    console.log(bottomConteinerPosition);
+  }, [topConteinerPostition, bottomConteinerPosition]);
 
   useEffect(() => {
     let timer;
@@ -134,13 +161,112 @@ function Slot() {
   }, [start]);
 
   useEffect(() => {
+    let id;
+    if (start === false && reelOneRefs.length !== 0 && count !== 0) {
+      id = setTimeout(position, 500);
+    }
+    return () => {
+      clearTimeout(id);
+    };
+  }, [start, reelOneRefs]);
+
+  ///*********************************************** */
+  let position = () => {
+    let first = [];
+    let second = [];
+    let third = [];
+    let fourth = [];
+    let fifth = [];
+
+    reelOneRefs.current.forEach((item) => {
+      if (
+        item.getBoundingClientRect().top >= topConteinerPostition &&
+        item.getBoundingClientRect().bottom <= bottomConteinerPosition
+      ) {
+        first.push(item.id);
+      }
+      setVisibleVertical1(first);
+    });
+    reelTwoRefs.current.forEach((item) => {
+      if (
+        item.getBoundingClientRect().top >= topConteinerPostition &&
+        item.getBoundingClientRect().bottom <= bottomConteinerPosition
+      ) {
+        second.push(item.id);
+      }
+      setVisibleVertical2(second);
+    });
+    reelThreeRefs.current.forEach((item) => {
+      if (
+        item.getBoundingClientRect().top >= topConteinerPostition &&
+        item.getBoundingClientRect().bottom <= bottomConteinerPosition
+      ) {
+        third.push(item.id);
+      }
+      setVisibleVertical3(third);
+    });
+
+    reelFourRefs.current.forEach((item) => {
+      if (
+        item.getBoundingClientRect().top >= topConteinerPostition &&
+        item.getBoundingClientRect().bottom <= bottomConteinerPosition
+      ) {
+        fourth.push(item.id);
+      }
+      setVisibleVertical4(fourth);
+    });
+
+    reelFiveRefs.current.forEach((item) => {
+      if (
+        item.getBoundingClientRect().top >= topConteinerPostition &&
+        item.getBoundingClientRect().bottom <= bottomConteinerPosition
+      ) {
+        fifth.push(item.id);
+      }
+      setVisibleVertical5(fifth);
+    });
+  };
+
+  //********************************* */
+
+  function rowsOfColums(col1, col2, col3, col4, col5) {
+    let matrix = [[...col1], [...col2], [...col3], [...col4], [...col5]];
+
+    let row1 = matrix.map((item) => item[0]);
+    let row2 = matrix.map((item) => item[1]);
+    let row3 = matrix.map((item) => item[2]);
+
+    let scorefromRow1 = calculateScore(row1);
+    let scoreFromRow2 = calculateScore(row2);
+    let scoreFromRow3 = calculateScore(row3);
+    let total = scorefromRow1 + scoreFromRow2 + scoreFromRow3;
+    setScore((prev) => prev + total);
+  }
+
+  useEffect(() => {
+    if (visibleVertical5.length !== 0) {
+      console.log(visibleVertical1);
+      console.log(visibleVertical2);
+      console.log(visibleVertical3);
+      console.log(visibleVertical4);
+      console.log(visibleVertical5);
+      rowsOfColums(
+        visibleVertical1,
+        visibleVertical2,
+        visibleVertical3,
+        visibleVertical4,
+        visibleVertical5
+      );
+    }
+  }, [visibleVertical5]);
+
+  useEffect(() => {
     if (start === false && count !== 0) {
-      console.log(gameState.reelsBottomPosition);
       let delta = deltaAfterStopingAnimation(
         gameState.reelsBottomPosition,
         gameState.symbolHeight
       );
-      console.log(delta);
+
       if (delta === 0) return;
       if (delta === gameState.symbolHeight / 4) {
         setGameState((prev) => {
@@ -162,7 +288,7 @@ function Slot() {
   }, [start]);
 
   useEffect(() => {
-    if (count % 4 !== 0) {
+    if (count % 4 !== 0 || count === 0) {
       const arrayOfIndex = slotSymbols.map((item) => item.id);
       let arr1 = initShuffleArray(arrayOfIndex);
       let arr2 = initShuffleArray(arrayOfIndex);
@@ -224,76 +350,113 @@ function Slot() {
   return (
     <div className="slot-conteiner">
       <div>{count}</div>
-      <section className="slot-conteiner__interface" ref={conteinerRef}>
-        <div className="column first">
-          <div
-            className="reel one"
-            ref={reelOneRef}
-            style={{
-              bottom: `-${gameState.reelsBottomPosition}px`,
-            }}
-          >
-            {reel1.map((item, index) => {
-              return (
-                <div
-                  key={uuidv4()}
-                  ref={(element) => (reelOneRefs.current[index] = element)}
-                >
-                  <img src={item.src} alt="" id={item.value} />
-                </div>
-              );
-            })}
+      <div>{score}</div>
+      <section className="box" ref={conteinerRef}>
+        <div className="slot-conteiner__interface">
+          <div className="column first">
+            <div
+              className="reel one"
+              ref={reelOneRef}
+              style={{
+                bottom: `-${gameState.reelsBottomPosition}px`,
+              }}
+            >
+              {reel1.map((item, index) => {
+                return (
+                  <div
+                    key={uuidv4()}
+                    ref={(element) => (reelOneRefs.current[index] = element)}
+                    id={item.value}
+                  >
+                    <img src={item.src} alt="" />
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-        <div className="column second">
-          <div
-            className="reel two"
-            style={{
-              bottom: `-${gameState.reelsBottomPosition}px`,
-            }}
-          >
-            {reel2.map((item) => (
-              <Symbol key={uuidv4()} item={item} />
-            ))}
+          <div className="column second">
+            <div
+              className="reel two"
+              style={{
+                bottom: `-${gameState.reelsBottomPosition}px`,
+              }}
+            >
+              {reel2.map((item, index) => {
+                return (
+                  <div
+                    key={uuidv4()}
+                    ref={(element) => (reelTwoRefs.current[index] = element)}
+                    id={item.value}
+                  >
+                    <img src={item.src} alt="" />
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-        <div className="column third">
-          <div
-            className="reel three"
-            style={{
-              bottom: `-${gameState.reelsBottomPosition}px`,
-            }}
-          >
-            {reel3.map((item) => (
-              <Symbol key={uuidv4()} item={item} />
-            ))}
+          <div className="column third">
+            <div
+              className="reel three"
+              style={{
+                bottom: `-${gameState.reelsBottomPosition}px`,
+              }}
+            >
+              {reel3.map((item, index) => {
+                return (
+                  <div
+                    key={uuidv4()}
+                    ref={(element) => (reelThreeRefs.current[index] = element)}
+                    id={item.value}
+                  >
+                    <img src={item.src} alt="" />
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-        <div className="column forth">
-          <div
-            className="reel four"
-            style={{
-              bottom: `-${gameState.reelsBottomPosition}px`,
-            }}
-          >
-            {reel4.map((item) => (
-              <Symbol key={uuidv4()} item={item} />
-            ))}
+          <div className="column forth">
+            <div
+              className="reel four"
+              style={{
+                bottom: `-${gameState.reelsBottomPosition}px`,
+              }}
+            >
+              {reel4.map((item, index) => {
+                return (
+                  <div
+                    key={uuidv4()}
+                    ref={(element) => (reelFourRefs.current[index] = element)}
+                    id={item.value}
+                  >
+                    <img src={item.src} alt="" />
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-        <div className="column fifth">
-          <div
-            className="reel five"
-            style={{
-              bottom: `-${gameState.reelsBottomPosition}px`,
-            }}
-          >
-            {reel5.map((item) => (
-              <Symbol key={uuidv4()} item={item} />
-            ))}
+          <div className="column fifth">
+            <div
+              className="reel five"
+              style={{
+                bottom: `-${gameState.reelsBottomPosition}px`,
+              }}
+            >
+              {reel5.map((item, index) => {
+                return (
+                  <div
+                    key={uuidv4()}
+                    ref={(element) => (reelFiveRefs.current[index] = element)}
+                    id={item.value}
+                  >
+                    <img src={item.src} alt="" />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
+
       <section>
         <button onClick={handleClick}>Start</button>
       </section>

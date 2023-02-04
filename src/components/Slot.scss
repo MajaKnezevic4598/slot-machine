@@ -10,12 +10,19 @@
   flex-direction: column;
   align-items: center;
 
-  &__interface {
-    margin-top: 15vh;
+  .box {
+    padding: 2rem;
 
+    border-radius: 4px;
+
+    box-shadow: -5px -5px 9px rgba(0, 0, 0, 0.45),
+      5px 5px 9px rgba(0, 0, 0, 0.3);
+  }
+
+  &__interface {
     // border-radius: 4px 4px 0 0;
     // border-color: white;
-    border: 2px solid white;
+
     @include mediaQuery($desktop-large-widht) {
       width: 5 * $slot-icon-width-large-desktop;
       height: 3 * $slot-icon-width-large-desktop;

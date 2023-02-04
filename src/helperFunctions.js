@@ -166,3 +166,30 @@ export const deltaAfterStopingAnimation = (
     return delta;
   }
 };
+
+export const calculateScore = (arr) => {
+  let result = 0;
+  //five matching symbols
+  if (
+    arr[0] === arr[1] &&
+    arr[1] === arr[2] &&
+    arr[2] === arr[3] &&
+    arr[3] === arr[4]
+  ) {
+    result = +arr[0] + +arr[1] + +arr[2] + +arr[3] + +arr[4];
+  } else if (arr[0] === arr[1] && arr[1] === arr[2] && arr[2] === arr[3]) {
+    result = +arr[0] + +arr[1] + +arr[2] + +arr[3];
+  } else if (arr[1] === arr[2] && arr[2] === arr[3] && arr[3] === arr[4]) {
+    result = +arr[1] + +arr[2] + +arr[3] + +arr[4];
+  }
+  //three matching symbols
+  else if (arr[0] === arr[1] && arr[1] === arr[2]) {
+    result = +arr[0] + +arr[1] + +arr[2];
+  } else if (arr[1] === arr[2] && arr[2] === arr[3]) {
+    result = +arr[1] + +arr[2] + +arr[3];
+  } else if (arr[2] === arr[3] && arr[3] === arr[4]) {
+    result = +arr[2] + +arr[3] + +arr[4];
+  }
+
+  return result;
+};

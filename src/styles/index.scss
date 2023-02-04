@@ -13,3 +13,24 @@ body {
   font-family: $roboto-font-mono;
   background-color: $background;
 }
+
+@include mediaQuery($desktop-large-widht) {
+  html {
+    font-size: 20px;
+  }
+}
+@include mediaQuery($desktop-width) {
+  html {
+    font-size: 16px;
+  }
+}
+@include mediaQuery($tablet-width) {
+  html {
+    font-size: 14px;
+  }
+}
+@include mediaQuery($mobile-width) {
+  html {
+    font-size: 10px;
+  }
+}
