@@ -2,7 +2,8 @@
 
 # dependencies
 
-/.pnp
+/
+.pnp
 .pnp.js
 
 # testing

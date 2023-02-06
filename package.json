@@ -42,5 +42,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "main": "index.js",
+  "repository": "https://github.com/MajaKnezevic4598/slot-machine.git",
+  "author": "Maja Knezevic <maja.knezevic1@gmail.com>",
+  "license": "MIT"
 }

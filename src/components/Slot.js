@@ -425,7 +425,7 @@ function Slot() {
       return "you need to decrease you bet!";
     }
     if (amount === 0 && start === false && count !== 0 && score === 0) {
-      return " you have spent your points. resat and try againt!";
+      return " you have spent your points. reset and try againt!";
     }
     if (score !== 0 && start === false && count !== 0) {
       return `Your amount have increased for ${score} points`;
@@ -434,7 +434,7 @@ function Slot() {
       return "you don`t have enough credit.reset and try again!";
     }
     if (amount < credit && start === false) {
-      return `you dont have engough credit to play. restart the game`;
+      return `you dont have engough credit to play. reset the game`;
     }
   }
 
