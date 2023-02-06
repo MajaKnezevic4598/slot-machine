@@ -1,3 +1,4 @@
+//function that returns non-matching combination of reels symbols
 export const losingCombination = (arr1, arr2, arr3, arr4, arr5) => {
   let matrix = [[...arr1], [...arr2], [...arr3], [...arr4], [...arr5]];
   let min = Math.min(...arr1);
@@ -30,6 +31,7 @@ export const losingCombination = (arr1, arr2, arr3, arr4, arr5) => {
   return matrix;
 };
 
+//function that makes winning array if there isn`t a winning combination
 function winningArray(arr) {
   for (let i = 0; i < arr.length - 1; i++) {
     if (arr[i] === arr[i + 1] && arr[i] === arr[i + 2]) {
@@ -51,7 +53,8 @@ function winningArray(arr) {
   return arr;
 }
 
-function initShuffleArray(arr) {
+//function to shuffle an array
+export function initShuffleArray(arr) {
   for (let i = 0; i < arr.length - 2; i++) {
     const j = Math.floor(Math.random() * (arr.length - i) + i);
     let current = arr[i];
@@ -61,6 +64,8 @@ function initShuffleArray(arr) {
   }
   return [...arr];
 }
+
+//function that makes matching combination of reels symbols
 export const winningCombination = (arr1, arr2, arr3, arr4, arr5) => {
   let matrix = [
     [...initShuffleArray(arr1)],
@@ -79,14 +84,12 @@ export const winningCombination = (arr1, arr2, arr3, arr4, arr5) => {
   let horizontal7 = matrix.map((item) => item[6]);
   let horizontal8 = matrix.map((item) => item[7]);
   let horizontal9 = matrix.map((item) => item[8]);
-  //da bismo imali pobednicku kombinaciju svaki treci treba da bude pobednicki
-  //a ostala dva mozemo da napravimo da budu gubitnicki
-  //tako cemo pri svakom vrtenju da imamo samo jednu dobitnu kombinaciju
 
+  //in order to have winning combination on each reels stop
+  //I made a combination that every third horizontal row must be winning
   horizontal1 = winningArray(horizontal1);
   horizontal4 = winningArray(horizontal4);
   horizontal7 = winningArray(horizontal7);
-  //sada moramo samo da vratimo u pocetni polozaj
 
   let matrix1 = [
     [...horizontal1],
@@ -117,6 +120,8 @@ export const winningCombination = (arr1, arr2, arr3, arr4, arr5) => {
   return completedMatrix;
 };
 
+//after initial shuffle of indexes function settingSymbols returns an array of 18
+//symbols with coresponding values and src attribute for displaying the symbols on screen
 export const settingSymbols = (reelIndexArray, slotSymbols) => {
   let indexes = [...reelIndexArray];
 
@@ -133,7 +138,6 @@ export const settingSymbols = (reelIndexArray, slotSymbols) => {
 
 //function that calculate how much do we need to move the div to be centered,
 //after stoping the animation
-
 export const deltaAfterStopingAnimation = (
   positionFromBottom,
   symbolHeight
@@ -150,6 +154,7 @@ export const deltaAfterStopingAnimation = (
   }
 };
 
+//calculating score for single horizontal row
 export const calculateScore = (arr) => {
   let result = 0;
   //five matching symbols
@@ -160,7 +165,9 @@ export const calculateScore = (arr) => {
     arr[3] === arr[4]
   ) {
     result = +arr[0] + +arr[1] + +arr[2] + +arr[3] + +arr[4];
-  } else if (arr[0] === arr[1] && arr[1] === arr[2] && arr[2] === arr[3]) {
+  }
+  //four matching symbols
+  else if (arr[0] === arr[1] && arr[1] === arr[2] && arr[2] === arr[3]) {
     result = +arr[0] + +arr[1] + +arr[2] + +arr[3];
   } else if (arr[1] === arr[2] && arr[2] === arr[3] && arr[3] === arr[4]) {
     result = +arr[1] + +arr[2] + +arr[3] + +arr[4];

@@ -11,6 +11,7 @@ import {
   winningCombination,
   deltaAfterStopingAnimation,
   calculateScore,
+  initShuffleArray,
 } from "../helperFunctions";
 
 import React, { useState, useRef, useEffect } from "react";
@@ -37,17 +38,6 @@ const slotSymbols = [
   { src: IMAGES.grapes, value: 25, id: 8 },
   { src: IMAGES.bluestar, value: 35, id: 9 },
 ];
-
-function initShuffleArray(arr) {
-  for (let i = 0; i < arr.length - 2; i++) {
-    const j = Math.floor(Math.random() * (arr.length - i) + i);
-    let current = arr[i];
-    let random = arr[j];
-    arr[j] = current;
-    arr[i] = random;
-  }
-  return [...arr];
-}
 
 function Slot() {
   const NUMBER_OF_SYMBOLS = 18;
@@ -139,9 +129,7 @@ function Slot() {
   useEffect(() => {
     const setPositions = () => {
       const symbolHeight = reelOneRef.current.children[0].offsetHeight;
-
       const delta = symbolHeight / 4;
-
       setGameState((prev) => {
         return { ...prev, symbolHeight, delta };
       });
@@ -159,13 +147,7 @@ function Slot() {
   }, []);
 
   useEffect(() => {
-    console.log(topConteinerPostition);
-    console.log(bottomConteinerPosition);
-  }, [topConteinerPostition, bottomConteinerPosition]);
-
-  useEffect(() => {
     let timer;
-
     if (start) {
       setCount((prev) => prev + 1);
       if (winningSound === false) {
@@ -174,7 +156,6 @@ function Slot() {
       moveReels();
       timer = setTimeout(() => {
         cancelAnimationFrame(ID);
-
         setStart(false);
         setIsPlaying(false);
       }, 6000);
@@ -403,7 +384,7 @@ function Slot() {
   }, [score]);
 
   const disableButton = () => {
-    if (start === true) {
+    if (start) {
       return true;
     }
     if (disabled === false && start === false && count !== 0) {
@@ -422,7 +403,7 @@ function Slot() {
     if (amount < credit && start === false) {
       return false;
     }
-    if (start === true) {
+    if (start) {
       return true;
     }
     if (amount - credit * bet < 0) {
