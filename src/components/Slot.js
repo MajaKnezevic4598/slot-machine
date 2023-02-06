@@ -1,8 +1,9 @@
 import "./Slot.scss";
-import IMAGES from "../assets";
+// import IMAGES from "../assets";
 import PlaySound from "./PlaySound";
 import spin from "../assets/spin.wav";
 import win from "../assets/win.wav";
+import seven from "../../public/static/seven.png";
 
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -28,15 +29,15 @@ import { FaPlus } from "react-icons/fa";
 import { FaMinus } from "react-icons/fa";
 
 const slotSymbols = [
-  { src: IMAGES.seven, value: 50, id: 1 },
-  { src: IMAGES.cherry, value: 30, id: 2 },
-  { src: IMAGES.apple, value: 20, id: 3 },
-  { src: IMAGES.lemon, value: 5, id: 4 },
-  { src: IMAGES.orange, value: 10, id: 5 },
-  { src: IMAGES.bigwin, value: 70, id: 6 },
-  { src: IMAGES.plum, value: 15, id: 7 },
-  { src: IMAGES.grapes, value: 25, id: 8 },
-  { src: IMAGES.bluestar, value: 35, id: 9 },
+  { src: "../../public/static/seven", value: 50, id: 1 },
+  { src: "../../public/static/cherry", value: 30, id: 2 },
+  { src: "../../public/static/apple", value: 20, id: 3 },
+  { src: "../../public/static/lemon", value: 5, id: 4 },
+  { src: "../../public/static/orange", value: 10, id: 5 },
+  { src: "../../public/static/bigwin", value: 70, id: 6 },
+  { src: "../../public/static/plum", value: 15, id: 7 },
+  { src: "../../public/static/grapes", value: 25, id: 8 },
+  { src: "../public/static/bluestar", value: 35, id: 9 },
 ];
 
 function Slot() {
