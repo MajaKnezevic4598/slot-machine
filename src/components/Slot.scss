@@ -9,7 +9,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
+  padding-top: 1rem;
+  .gameResult {
+    border: 1px solid white;
+    padding: 0.5rem 2rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+  }
   .box {
     padding: 2rem;
 
@@ -105,24 +111,77 @@
     }
   }
 
-  .btn-start {
-    padding: 0.5rem 1rem;
-    margin-top: 1rem;
-    background-color: $background;
-    font-family: $roboto-font-mono;
-    border: 1px solid white;
-    color: white;
-    border-radius: 3px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    &:hover {
-      cursor: pointer;
+  .gameControlls {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 34rem;
+    margin-top: 0.5rem;
+
+    padding: 0.5rem;
+    .set-bet {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      & > button {
+        background-color: $background;
+        color: white;
+        border: 1px solid white;
+        padding: 0.4rem;
+        border-radius: 4px;
+        font-size: 0.5rem;
+        cursor: pointer;
+      }
+      &__bet {
+        padding: 0 0.5rem;
+      }
     }
-    &:disabled {
-      color: gray;
-      border: 1px solid gray;
-      cursor: not-allowed;
+    .btn-start {
+      padding: 0.5rem 1rem;
+
+      background-color: $background;
+      font-family: $roboto-font-mono;
+      border: 1px solid white;
+      color: white;
+      border-radius: 3px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      &:hover {
+        cursor: pointer;
+      }
+      &:disabled {
+        color: gray;
+        border: 1px solid gray;
+        cursor: not-allowed;
+      }
+    }
+    .btn-reset {
+      padding: 0.5rem 1rem;
+
+      background-color: $background;
+      font-family: $roboto-font-mono;
+      border: 1px solid white;
+      color: white;
+      border-radius: 3px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      &:hover {
+        cursor: pointer;
+      }
+      &:disabled {
+        color: gray;
+        border: 1px solid gray;
+        cursor: not-allowed;
+      }
     }
   }
+}
+
+.message {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  margin-top: 1rem;
+  letter-spacing: 1px;
 }

@@ -1,5 +1,8 @@
 import "./Slot.scss";
 import IMAGES from "../assets";
+import PlaySound from "./PlaySound";
+import spin from "../assets/spin.wav";
+import win from "../assets/win.wav";
 
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -11,17 +14,28 @@ import {
 } from "../helperFunctions";
 
 import React, { useState, useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  betIncrement,
+  betDecrement,
+  resetGame,
+  reduceCredit,
+  gameScore,
+} from "../redux/game/gameActions";
+
+import { FaPlus } from "react-icons/fa";
+import { FaMinus } from "react-icons/fa";
 
 const slotSymbols = [
-  { src: IMAGES.seven, value: 100, id: 1 },
-  { src: IMAGES.cherry, value: 60, id: 2 },
-  { src: IMAGES.apple, value: 40, id: 3 },
-  { src: IMAGES.lemon, value: 10, id: 4 },
-  { src: IMAGES.orange, value: 20, id: 5 },
-  { src: IMAGES.bigwin, value: 150, id: 6 },
-  { src: IMAGES.plum, value: 30, id: 7 },
-  { src: IMAGES.grapes, value: 50, id: 8 },
-  { src: IMAGES.bluestar, value: 70, id: 9 },
+  { src: IMAGES.seven, value: 50, id: 1 },
+  { src: IMAGES.cherry, value: 30, id: 2 },
+  { src: IMAGES.apple, value: 20, id: 3 },
+  { src: IMAGES.lemon, value: 5, id: 4 },
+  { src: IMAGES.orange, value: 10, id: 5 },
+  { src: IMAGES.bigwin, value: 70, id: 6 },
+  { src: IMAGES.plum, value: 15, id: 7 },
+  { src: IMAGES.grapes, value: 25, id: 8 },
+  { src: IMAGES.bluestar, value: 35, id: 9 },
 ];
 
 function initShuffleArray(arr) {
@@ -51,8 +65,9 @@ function Slot() {
   const [topConteinerPostition, setTopConteinerPosition] = useState();
   const [bottomConteinerPosition, setBottomConteinerPostion] = useState();
   const [score, setScore] = useState(0);
-  //   const [deltaFromTop, setDeltaFromTop] = useState();
-  //   const [move, setMove] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [winningSound, setWinningSound] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   //visible vertical part of the array
   const [visibleVertical1, setVisibleVertical1] = useState([]);
@@ -74,6 +89,11 @@ function Slot() {
   const [reel3, setReel3] = useState([]);
   const [reel4, setReel4] = useState([]);
   const [reel5, setReel5] = useState([]);
+
+  const bet = useSelector((state) => state.bet);
+  const amount = useSelector((state) => state.amount);
+  const credit = useSelector((state) => state.credit);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const arrayOfIndex = slotSymbols.map((item) => item.id);
@@ -132,7 +152,7 @@ function Slot() {
       setBottomConteinerPostion(
         conteinerRef.current.getBoundingClientRect().bottom
       );
-    }, 1000);
+    }, 500);
     return () => {
       clearTimeout(id);
     };
@@ -145,13 +165,19 @@ function Slot() {
 
   useEffect(() => {
     let timer;
+
     if (start) {
       setCount((prev) => prev + 1);
+      if (winningSound === false) {
+        setIsPlaying(true);
+      }
       moveReels();
       timer = setTimeout(() => {
         cancelAnimationFrame(ID);
+
         setStart(false);
-      }, 4000);
+        setIsPlaying(false);
+      }, 6000);
     }
 
     return () => {
@@ -159,6 +185,23 @@ function Slot() {
       clearTimeout(timer);
     };
   }, [start]);
+
+  useEffect(() => {
+    let timer;
+    if (start === false && count !== 0) {
+      timer = setTimeout(() => {
+        setDisabled(true);
+      }, 1100);
+    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [start]);
+
+  useEffect(() => {
+    setScore(0);
+    setDisabled(false);
+  }, [count]);
 
   useEffect(() => {
     let id;
@@ -240,16 +283,13 @@ function Slot() {
     let scoreFromRow2 = calculateScore(row2);
     let scoreFromRow3 = calculateScore(row3);
     let total = scorefromRow1 + scoreFromRow2 + scoreFromRow3;
-    setScore((prev) => prev + total);
+    let finallScore = total * bet;
+    setScore(finallScore);
+    dispatch(gameScore(finallScore));
   }
 
   useEffect(() => {
     if (visibleVertical5.length !== 0) {
-      console.log(visibleVertical1);
-      console.log(visibleVertical2);
-      console.log(visibleVertical3);
-      console.log(visibleVertical4);
-      console.log(visibleVertical5);
       rowsOfColums(
         visibleVertical1,
         visibleVertical2,
@@ -334,6 +374,7 @@ function Slot() {
 
   const handleClick = () => {
     setStart(true);
+    dispatch(reduceCredit());
   };
 
   useEffect(() => {
@@ -347,10 +388,78 @@ function Slot() {
     console.log(gameState.reelsBottomPosition);
   }, [gameState.reelsBottomPosition]);
 
+  useEffect(() => {
+    let id;
+    if (score !== 0 && isPlaying === false && count !== 0) {
+      setWinningSound(true);
+      id = setTimeout(() => {
+        setWinningSound(false);
+      }, 1000);
+    }
+
+    return () => {
+      clearTimeout(id);
+    };
+  }, [score]);
+
+  const disableButton = () => {
+    if (start === true) {
+      return true;
+    }
+    if (disabled === false && start === false && count !== 0) {
+      return true;
+    }
+
+    if (amount - credit * bet < 0) {
+      return true;
+    }
+  };
+
+  const disableButtonReset = () => {
+    if (amount === 0 && start === false) {
+      return false;
+    }
+    if (amount < credit && start === false) {
+      return false;
+    }
+    if (start === true) {
+      return true;
+    }
+    if (amount - credit * bet < 0) {
+      return true;
+    }
+    if (disabled === false && start === false && count !== 0) {
+      return true;
+    }
+  };
+
+  function mess() {
+    if (
+      amount - credit * bet < 0 &&
+      amount >= credit &&
+      amount !== 0 &&
+      count !== 0 &&
+      start === false
+    ) {
+      return "you need to decrease you bet!";
+    }
+    if (amount === 0 && start === false && count !== 0 && score === 0) {
+      return " you have spent your points. resat and try againt!";
+    }
+    if (score !== 0 && start === false && count !== 0) {
+      return `Your amount have increased for ${score} points`;
+    }
+    if (amount < credit && start === false) {
+      return "you don`t have enough credit.reset and try again!";
+    }
+    if (amount < credit && start === false) {
+      return `you dont have engough credit to play. restart the game`;
+    }
+  }
+
   return (
     <div className="slot-conteiner">
-      <div>{count}</div>
-      <div>{score}</div>
+      <div className="gameResult">{amount}</div>
       <section className="box" ref={conteinerRef}>
         <div className="slot-conteiner__interface">
           <div className="column first">
@@ -457,12 +566,46 @@ function Slot() {
         </div>
       </section>
 
-      <section>
-        <button className="btn-start" onClick={handleClick} disabled={start}>
+      <section className="gameControlls">
+        <div className="set-bet">
+          <button
+            className="set-bet__decrement"
+            onClick={() => {
+              dispatch(betDecrement());
+            }}
+          >
+            <FaMinus />
+          </button>
+          <div className="set-bet__bet">{bet}</div>
+          <button
+            className="set-bet__increment"
+            onClick={() => {
+              dispatch(betIncrement());
+            }}
+          >
+            <FaPlus />
+          </button>
+        </div>
+        <button
+          className="btn-start"
+          onClick={handleClick}
+          disabled={disableButton()}
+        >
           Start
         </button>
+        <button
+          className="btn-reset"
+          onClick={() => dispatch(resetGame())}
+          disabled={disableButtonReset()}
+        >
+          Reset
+        </button>
       </section>
-      <section></section>
+      <section>
+        <p className="message">{mess()}</p>
+      </section>
+      <PlaySound isPlaying={isPlaying} url={spin} />
+      <PlaySound isPlaying={winningSound} url={win} />
     </div>
   );
 }

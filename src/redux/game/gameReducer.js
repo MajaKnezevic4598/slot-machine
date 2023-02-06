@@ -8,9 +8,8 @@ import {
 
 const initialState = {
   bet: 1,
-  winningResult: 0,
   credit: 20,
-  message: "",
+  amount: 100,
 };
 
 const gameReducer = (state = initialState, action) => {
@@ -18,27 +17,25 @@ const gameReducer = (state = initialState, action) => {
     case BET_INCREMENT: {
       return {
         ...state,
-        bet: 1,
+        bet: state.bet === 5 ? state.bet : state.bet + 1,
       };
     }
     case BET_DECREMENT: {
       return {
         ...state,
-        bet: 3,
+        bet: state.bet === 1 ? state.bet : state.bet - 1,
       };
     }
     case REDUCE_CREDIT: {
       return {
         ...state,
-        credit: state.credit - state.bet,
-        message: "",
+        amount: state.amount - state.bet * state.credit,
       };
     }
     case SCORE: {
       return {
         ...state,
-        winningResult: state.bet * action.payload,
-        message: action.payload === 0 ? "Try again!" : "You won!",
+        amount: state.amount + action.payload,
       };
     }
     case RESET_GAME: {
